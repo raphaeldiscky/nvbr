@@ -2,6 +2,20 @@ import React, { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import gsap from 'gsap'
 
+import dallas from '../images/dallas.webp'
+import austin from '../images/austin.webp'
+import newyork from '../images/newyork.webp'
+import sanfrancisco from '../images/sanfrancisco.webp'
+import beijing from '../images/beijing.webp'
+
+const cities = [
+  { name: 'Dallas', image: dallas },
+  { name: 'Austin', image: austin },
+  { name: 'New York', image: newyork },
+  { name: 'San Francisco', image: sanfrancisco },
+  { name: 'Beijing', image: beijing }
+]
+
 const Hamburger = ({ state }) => {
   // vars for our animated dom nodes
   let menu = useRef(null)
@@ -83,6 +97,30 @@ const Hamburger = ({ state }) => {
     })
   }
 
+  const handleCity = (city) => {
+    gsap.to(cityBackground, {
+      duration: 0,
+      background: `url(${city}) center center`
+    })
+    gsap.to(cityBackground, {
+      duration: 0.4,
+      opacity: 1,
+      ease: 'power3.inOut'
+    })
+    gsap.from(cityBackground, {
+      duration: 0.4,
+      skewY: 2,
+      transformOrigin: 'right top'
+    })
+  }
+
+  const handleCityReturn = () => {
+    gsap.to(cityBackground, {
+      duration: 0.4,
+      opacity: 0
+    })
+  }
+
   return (
     <div ref={(el) => (menu = el)} className='hamburger-menu'>
       <div
@@ -90,7 +128,7 @@ const Hamburger = ({ state }) => {
         className='menu-secondary-bg-color'
       ></div>
       <div ref={(el) => (revealMenu = el)} className='menu-layer'>
-        <div className='menu-city-bg'></div>
+        <div ref={(el) => (cityBackground = el)} className='menu-city-bg'></div>
         <div className='container'>
           <div className='wrapper'>
             <div className='menu-links'>
@@ -124,11 +162,15 @@ const Hamburger = ({ state }) => {
               </div>
               <div className='locations'>
                 Locations:
-                <span>Dallas</span>
-                <span>Austin</span>
-                <span>New York</span>
-                <span>San Francisco</span>
-                <span>Beijing</span>
+                {cities.map((el) => (
+                  <span
+                    key={el.name}
+                    onMouseEnter={() => handleCity(el.image)}
+                    onMouseOut={handleCityReturn}
+                  >
+                    {el.name}
+                  </span>
+                ))}
               </div>
             </div>
           </div>
